@@ -90,8 +90,8 @@ include("../lib/gdppc.jl")
 
         end
 
-        vv.world_disc_utility[tt] = vv.utility_sum[tt] * (1 + pp.PRTP) ^ - (dim_keys(model, :time)[tt.t] - 2020) # possibly scope to improve how time is coded in exponent
-        vv.equiv_conspc[tt] = (vv.world_disc_utility[tt] * (1 - pp.EMUC) / vv.world_population[tt] ^ (1 / (1 - pp.EMUC)))
+        vv.world_disc_utility[tt] = vv.utility_sum[tt] * (1 + pp.PRTP) ^ - (gettime(tt) - 2020) # possibly scope to improve how time is coded in exponent
+        vv.equiv_conspc[tt] = (vv.world_disc_utility[tt] * (1 - pp.EMUC) / vv.world_population[tt]) ^ (1 / (1 - pp.EMUC))
     end
 end
 
@@ -99,7 +99,7 @@ function addUtility(model, ssp)
 
     params = CSV.read("../data/utilityparams.csv", DataFrame)
 
-    utility = add_comp!(model, Utility)
+    utility = add_comp!(model, Utility, first=2010)
 
     utility[:EMUC] = params.Value[params.Parameter .== "EMUC"][1]
     utility[:PRTP] = params.Value[params.Parameter .== "PRTP"][1]
