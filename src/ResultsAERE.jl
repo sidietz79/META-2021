@@ -1,6 +1,7 @@
 ##This file produces all May 2023 results for the AERE talk.
 
 using Mimi
+import Random
 include("../src/MimiMETA.jl")
 include("../src/montecarlo.jl")
 ## include("../src/lib/presets.jl") # Needed?
@@ -20,6 +21,8 @@ include("../src/bge.jl")
 # Phi parameters
 2 PHI SETTINGS
 =#
+
+Random.seed!(26052023)
 
 ### Create the model (this just sets a long string that the other functions can use)
 model = full_model(;
@@ -43,6 +46,8 @@ model = full_model(;
 
 ### Update the persistence parameter, or not
 
+### Run the model so we can run scripts
+run(model)
 
 ### Run the model in MC mode
 sim_full(model, 100,
@@ -64,12 +69,43 @@ sim_full(model, 100,
 bgeresults = calculate_bge(model)
 
 ### Calculate the SC-CO2 in MC mode
-sccresults = calculate_scc_full_mc(model, 100, 10.0, 1.5)
-sccresults = calculate_scc(model, 2020, 10.0, 1.5)
+sccresults = calculate_scc_full_mc(model,
+    10, # MC reps
+    "Fit of Hope and Schaefer (2016)", # PCF
+    "Cai et al. central value", # AMAZ
+    "Nordhaus central value", # GIS
+    "none", # WAIS
+    "Distribution", # SAF
+    true, # ais_used
+    true, # ism_used
+    true, # omh_used
+    true, # amoc_used
+    false, # persist
+    false, # emuc
+    false, # prtp
+    2020, # pulse year
+    10.0, # pulse size
+    1.5) # EMUC
 #Miniloop over 2020(10)2100
 
 ### Calculate the SC-CH4 in MC mode
-scch4results = calculate_scch4(model, 2020, 0.36, 1.5)
+scch4results = calculate_scc_full_mc(model,
+    10, # MC reps
+    "Fit of Hope and Schaefer (2016)", # PCF
+    "Cai et al. central value", # AMAZ
+    "Nordhaus central value", # GIS
+    "none", # WAIS
+    "Distribution", # SAF
+    true, # ais_used
+    true, # ism_used
+    true, # omh_used
+    true, # amoc_used
+    false, # persist
+    false, # emuc
+    false, # prtp
+    2020, # pulse year
+    0.36, # pulse size
+    1.5) # EMUC
 #Miniloop over 2020(10)2100
 
 
